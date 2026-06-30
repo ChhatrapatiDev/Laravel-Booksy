@@ -37,7 +37,7 @@ class BookForm
                     ->default(0),
                 FileUpload::make('cover_image')
                     ->image()
-                    ->disk('public')
+                    ->disk('cloudinary')
                     ->directory('book-covers'),
             ]);
     }
