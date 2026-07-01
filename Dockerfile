@@ -1,30 +1,51 @@
+# PHP CLI image
+FROM php:8.5.7-cli
 
-#Base image: PHP 8.5.7
-FROM php:8.5.7
+# Install system packages
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    unzip \
+    zip \
+    libpq-dev \
+    libzip-dev \
+    libicu-dev \
+    libonig-dev \
+    && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        zip \
+        intl \
+        mbstring \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-#Install system dependencies
-RUN apt-get update -y && apt-get install -y \ openssl zip unzip git
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-#Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-#Install PostgreSQL client
-RUN Docker-php-ext-install pdo pdo_pgsql
-
-#Check if abstring extension is installed (for debugging purposes)
-RUN php -m | grep abstring
-
-#Set working directory
+# Set working directory
 WORKDIR /app
 
-#Copy application files to container
-COPY . /app
+# Copy composer files first (better Docker cache)
+COPY composer.json composer.lock ./
 
-#Install application dependencies
-RUN composer install
+# Install PHP dependencies
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-interaction
 
-#Command to run the Laravel development server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Copy application
+COPY . .
 
-#Expose port 8000
-EXPOSE 8000
+# Optimize Laravel
+RUN php artisan config:cache || true
+RUN php artisan route:cache || true
+RUN php artisan view:cache || true
+
+# Expose Render port
+EXPOSE 10000
+
+# Start Laravel
+CMD sh -c "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
