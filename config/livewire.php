@@ -129,7 +129,7 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => 'local',
+        'disk' => 's3',
         'rules' => null,
         'directory' => null,
         'middleware' => null,
