@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 
 class BookForm
 {
@@ -36,9 +37,9 @@ class BookForm
                     ->numeric()
                     ->default(0),
                 FileUpload::make('cover_image')
-                    ->image()
-                    ->disk('cloudinary')
-                    ->directory('book-covers'),
+                    ->disk('s3')
+                    ->directory('covers') // Saves files in a "covers" folder in your bucket
+                    ->image(),
             ]);
     }
 }

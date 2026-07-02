@@ -31,7 +31,8 @@ class BooksTable
                 TextColumn::make('stock')
                     ->numeric()
                     ->sortable(),
-                ImageColumn::make('cover_image'),
+                ImageColumn::make('cover_image')
+                    ->disk('s3'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
