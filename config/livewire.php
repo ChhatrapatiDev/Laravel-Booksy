@@ -128,14 +128,30 @@ return [
     |
     */
 
-'temporary_file_upload' => [
+    'temporary_file_upload' => [
         'disk' => env('FILESYSTEM_DISK', 's3'),
         'rules' => null,
         'directory' => null,
         'middleware' => null,
         'preview_mimes' => [
-            'png', 'gif', 'bmp', 'svg', 'wav', 'mp4', 'mov', 'avi', 'wmv', 'mp3', 'm4a', 'jpg', 'jpeg', 'mpga', 'webp', 'wma',
+            'png',
+            'gif',
+            'bmp',
+            'svg',
+            'wav',
+            'mp4',
+            'mov',
+            'avi',
+            'wmv',
+            'mp3',
+            'm4a',
+            'jpg',
+            'jpeg',
+            'mpga',
+            'webp',
+            'wma',
         ],
         'max_upload_time' => 5,
         'cleanup' => true,
     ], // Ensure this closing bracket and comma are exactly like this
+];
